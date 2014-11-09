@@ -1,0 +1,46 @@
+{
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "devDependencies": {
+    "browserify": "^6.2.0",
+    "browserify-shim": "^3.8.0",
+    "grunt": "~0.4.5",
+    "grunt-browserify": "^3.2.0",
+    "grunt-contrib-concat": "~0.4.0",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-qunit": "~0.5.2",
+    "grunt-contrib-uglify": "~0.5.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-react": "^0.10.0"
+  },
+  "dependencies": {
+    "express": "^4.10.1",
+    "fluxxor": "^1.5.0",
+    "knuth-shuffle": "^1.0.1",
+    "lodash": "^2.4.1",
+    "react": "^0.12.0"
+  },
+  "name": "flux-test",
+  "description": "Testing out Facebook's Flux architecture",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/g1derekl/flux-test.git"
+  },
+  "author": "Derek Li",
+  "license": "GPLv3",
+  "bugs": {
+    "url": "https://github.com/g1derekl/flux-test/issues"
+  },
+  "homepage": "https://github.com/g1derekl/flux-test",
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "jquery": "global:$"
+  }
+}
