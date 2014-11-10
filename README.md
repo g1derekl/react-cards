@@ -1,7 +1,7 @@
 flux-test
 =========
 
-A simple card game, testing out the capabilities of Facebook's Flux architecture.
+A simple card game engine, testing out the capabilities of Facebook's Flux architecture.
 
 To run:
 
