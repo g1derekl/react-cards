@@ -1,37 +1,42 @@
 var Fluxxor = require('fluxxor')
   , React = require('react')
+  , shuffle = require('knuth-shuffle').knuthShuffle // aka Fisher-Yates shuffle algorithm
   , _ = require('lodash');
 
 var constants = {
-  PLAY_CARD: 'PLAY_CARD',
-  HIGHLIGHT_CARD: 'HIGHLIGHT_CARD',
   NEW_HAND: 'NEW_HAND',
-  ADD_CARD: 'ADD_CARD',
-  CLEAR_CARDS: 'CLEAR_CARDS'
+  MOVE_CARD: 'MOVE_CARD'
 };
 
 var CardStore = Fluxxor.createStore({
-  initialize: function(numOfPlayers) {
-    this.cards = {
-      discardPile: []
-    };
-
-    for (var i=0; i < numOfPlayers; i++) {
-      this.cards['player' + i + 'hand'] = [];
-    }
+  initialize: function() {
+    this.cards = {};
 
     this.bindActions(
-      constants.ADD_CARD, this.onAddCard,
-      constants.CLEAR_CARDS, this.onClearCards
+      constants.MOVE_CARD, this.onMoveCard,
+      constants.NEW_HAND, this.onNewHand
     );
   },
-  onAddCard: function(payload) { // Add card to discard pile
-    this.cards.push(payload.card);
+  onMoveCard: function(params) { // Add card to discard pile
+    this.cards[params.from] = _.reject(this.cards[params.from], params.card);
+
+    this.cards[params.to].push(params.card);
 
     this.emit('change');
   },
-  onClearCards: function() { // Clear discard pile
-    this.cards = [];
+  onNewHand: function(payload) { // New hand
+    var deck = payload.deck.slice(0);
+    deck = shuffle(deck);
+
+    var cards = _.groupBy(deck, function(element, index){
+      return 'player' + Math.floor(index/(deck.length / payload.players));
+    });
+
+    _.each(payload.piles, function(pile) {
+      cards[pile] = [];
+    });
+
+    this.cards = cards;
 
     this.emit('change');
   },
@@ -41,24 +46,16 @@ var CardStore = Fluxxor.createStore({
 });
 
 var actions = {
-  addCard: function(card) {
-    this.dispatch(constants.ADD_CARD, {card: card});
+  moveCard: function(params) {
+    this.dispatch(constants.MOVE_CARD, params);
   },
-  playCard: function(card) {
-    this.dispatch(constants.PLAY_CARD, {card: card});
-  },
-  highlightCard: function(card) {
-    this.dispatch(constants.HIGHLIGHT_CARD, {card: card});
-  },
-  newHand: function(cards) {
-    this.dispatch(constants.NEW_HAND, {cards: cards});
+  newHand: function(params) {
+    this.dispatch(constants.NEW_HAND, params);
   }
 };
 
 var stores = {
-  CardStore: new DiscardStore(4)
+  CardStore: new CardStore()
 };
 
-var flux = new Fluxxor.Flux(stores, actions);
-
-module.exports = flux;
+module.exports = new Fluxxor.Flux(stores, actions);

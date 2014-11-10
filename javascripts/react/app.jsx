@@ -4,35 +4,40 @@ var React        = require('react')
   , _            = require('lodash')
   , numOfPlayers = 4
   , flux         = require('../flux.js')
-  , cardDeck     = require('../cards.json');
+  , cardDeck     = require('../cards.json'); // Standard 52-card deck
 
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 var Table = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin('DiscardStore')],
+  mixins: [FluxMixin, StoreWatchMixin('CardStore')],
 
-  getStateFromFlux: function() {
-    return {
-      cards: this.getFlux().store('DiscardStore').getState().cards
-    }
+  componentDidMount: function() {
+    this.newHand({ // Eventually, this will be read from a file to be customizable by the player
+      deck: cardDeck,
+      players: numOfPlayers,
+      piles: ['discard']
+    });
   },
-  addCard: function(card) {
-    this.getFlux().actions.addCard(card);
+  getStateFromFlux: function() {
+    return this.getFlux().store('CardStore').getState()
+  },
+  newHand: function(params) {
+    this.getFlux().actions.newHand(params);
   },
   render: function() {
 
     var lastCard, lastCardString;
 
-    if (this.state.cards.length > 0) {
-      var lastCard = this.state.cards[this.state.cards.length - 1];
+    if (this.state.discard && this.state.discard.length > 0) { // Again, this should be made easy to customize by the player
+      var lastCard = this.state.discard[this.state.discard.length - 1];
       var lastCardString = lastCard.value + ' of ' + lastCard.suit + 's';
     }
 
     var hands = []; // One hand per player
 
     for (var i=0; i < numOfPlayers; i++) {
-      hands.push(<Hand playCard={this.addCard} player={i} />)
+      hands.push(<Hand cards={this.state['player' + i]} player={i} />)
     }
 
     return (
@@ -50,28 +55,18 @@ var Table = React.createClass({
 });
 
 var Hand = React.createClass({
-  mixins: [FluxMixin, StoreWatchMixin('HandStore')],
+  mixins: [FluxMixin],
 
-  getStateFromFlux: function() {
-    return {
-      cards: this.getFlux().store('Player' + this.props.player + 'Store').getState().cards
-    }
-  },
-  componentDidMount: function() {
-    this.getFlux().actions.newHand(cardDeck);
-  },
   playCard: function(card) {
     return function(e) {
-      this.getFlux().actions.playCard(card);
-
-      this.props.playCard(card);
+      this.getFlux().actions.moveCard({card: card, from: 'player' + this.props.player, to: 'discard'});
     }.bind(this);
   },
   render: function() {
 
     var cards = [];
 
-    _.each(this.state.cards, function(card) {
+    _.each(this.props.cards, function(card) {
       cards.push(
         <div className='uk-width-large-1-5' onClick={this.playCard(card)}>{card.value + ' of ' + card.suit + 's'}</div>
       );
@@ -79,7 +74,7 @@ var Hand = React.createClass({
 
     return (
       <div className='uk-width-large-1-2'>
-        <h5>Hand</h5>
+        <h5>Player {this.props.player + 1}</h5>
         <div className='uk-grid'>
           {cards}
         </div>
