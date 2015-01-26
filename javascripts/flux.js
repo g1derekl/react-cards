@@ -1,56 +1,47 @@
-var Fluxxor = require('fluxxor')
-  , React = require('react')
-  , shuffle = require('knuth-shuffle').knuthShuffle // aka Fisher-Yates shuffle algorithm
-  , _ = require('lodash');
+var Fluxxor     = require('fluxxor')
+  , React       = require('react')
+  , _           = require('lodash')
+  , cards       = require('./cards.json');
 
-var constants = {
-  NEW_HAND: 'NEW_HAND',
-  MOVE_CARD: 'MOVE_CARD'
-};
+// var constants = {
+//   NEW_HAND: 'NEW_HAND',
+//   MOVE_CARD: 'MOVE_CARD',
+//   SHUFFLE_PILE: 'SHUFFLE_PILE',
+//   RESET_HAND: 'RESET_HAND',
+//   NEW_PILE: 'NEW_PILE'
+// };
 
 var CardStore = Fluxxor.createStore({
   initialize: function() {
-    this.cards = {};
+    this.cards = cards;
 
     this.bindActions(
-      constants.MOVE_CARD, this.onMoveCard,
-      constants.NEW_HAND, this.onNewHand
+      'MOVE_CARD', this.onMoveCard,
+      'SHUFFLE_PILE', this.onShufflePile
     );
   },
-  onMoveCard: function(params) { // Add card to discard pile
-    this.cards[params.from] = _.reject(this.cards[params.from], params.card);
-
-    this.cards[params.to].push(params.card);
+  onMoveCard: function(payload) { // Move card from one pile to another
+    var card = _.find(this.cards, payload.card);
+    card.belongsTo = payload.to;
 
     this.emit('change');
   },
-  onNewHand: function(payload) { // New hand
-    var deck = payload.deck.slice(0);
-    deck = shuffle(deck);
-
-    var cards = _.groupBy(deck, function(element, index){
-      return 'player' + Math.floor(index/(deck.length / payload.players));
-    });
-
-    _.each(payload.piles, function(pile) {
-      cards[pile] = [];
-    });
-
-    this.cards = cards;
+  onShufflePile: function(payload) { // Shuffle the deck
+    this.cards = _.shuffle(this.cards);
 
     this.emit('change');
   },
   getState: function() {
-    return this.cards
+    return this.cards;
   }
 });
 
 var actions = {
   moveCard: function(params) {
-    this.dispatch(constants.MOVE_CARD, params);
+    this.dispatch('MOVE_CARD', params);
   },
-  newHand: function(params) {
-    this.dispatch(constants.NEW_HAND, params);
+  shufflePile: function(params) {
+    this.dispatch('SHUFFLE_PILE', params);
   }
 };
 
