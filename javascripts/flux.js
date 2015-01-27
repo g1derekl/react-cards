@@ -86,7 +86,7 @@ var GameStore = Fluxxor.createStore({ // Game logic goes here.
     return order;
   },
   _determineTrickWinner: function(firstPlayer, discard) { // Determine the winner of a trick and its point value, given each player's plays.
-    var leadCard = discard[firstPlayer]; // Initially, the card that was played by the previous trick's winner
+    var leadCard = discard[firstPlayer]; // Initially, the card that was played by the previous trick's leader
     var leadingPlayer = firstPlayer;
 
     var following = _.reduce(discard, function(following, card, player) { // The cards that followed the leader
