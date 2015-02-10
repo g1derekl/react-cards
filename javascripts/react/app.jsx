@@ -41,13 +41,6 @@ var CardSetupMixin = {
 var HeartsTable = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin('CardStore', 'GameStore'), CardSetupMixin],
 
-  getInitialState: function() {
-    return {
-      firstPlayer: null,
-      order: [],
-      discard: {}
-    };
-  },
   getStateFromFlux: function() {
     return {
       cards: this.getFlux().store('CardStore').getState(),
@@ -74,11 +67,83 @@ var HeartsTable = React.createClass({
     this.getFlux().actions.playCard({card: card});
   },
   _isLegalMove: function(card, player) { // Determine if a move is legal.
-    if (this.state.game.order[0] != player) { // Is it the player's turn?
+    return this._isPointCard(card, player); // See flow chart for detailed steps.
+  },
+  _isPointCard: function(card, player) { // Determine if the card is a Queen of spades or a heart.
+    if (card.suit == 'Heart' || _.isEqual(card, {value: 'Q', suit: 'Spade'})) {
+      return this._onlyHasPointCards(card, player);
+    }
+    return this._isPlayerLeadingNonPointCard(card, player);
+  },
+  _onlyHasPointCards: function(card, player) { // Determine if player only has point cards (Queen of spades or hearts).
+    var hasNonPointCards = _.find(this.state.cards, function(card) {
+      if (card.suit == 'Club' || card.suit == 'Diamond') {
+        return true;
+      }
+      else if (card.suit == 'Spade' && card.value != 'Q') {
+        return true;
+      }
+      return false;
+    });
+
+    if (!hasNonPointCards) {
+      return true;
+    }
+    return this._isFirstTrickPointCard(card, player);
+  },
+  _isFirstTrickPointCard: function(card, player) { // Determine if it's the first trick (for point cards).
+    if (this.state.game.firstTrick) {
       return false;
     }
-
-    // TODO: implement the scenarios presented in the flow chart.
+    return this._isPlayerLeadingPointCard(card, player);
+  },
+  _isPlayerLeadingPointCard: function(card, player) { // Determine if player is leading the trick (for point cards).
+    if (this.state.game.firstPlayer == player) {
+      return this._isQueenOfSpades(card, player);
+    }
+    return this._isCardSameSuitAsLead(card, player);
+  },
+  _isQueenOfSpades: function(card, player) { // Determine if card is the Queen of spades.
+    if (_.isEqual(card, {value: 'Q', suit: 'Spade'})) {
+      return true;
+    }
+    return this._hasHeartsBeenBroken(card, player);
+  },
+  _hasHeartsBeenBroken: function(card, player) { // Determine if hearts has been broken.
+    if (_.find(this.state.cards, {belongsTo: 'discard', suit: 'Heart'})) {
+      return true;
+    }
+    return false;
+  },
+  _isCardSameSuitAsLead: function(card, player) { // Determine if the card played is of the same suit as the lead card.
+    if (card.suit == this.state.game.discard[this.state.game.firstPlayer].suit) {
+      return true;
+    }
+    return this._doesPlayerHaveLeadSuit(card, player);
+  },
+  _doesPlayerHaveLeadSuit: function(card, player) {
+    if (_.find(this.state.cards, {suit: this.state.game.discard[this.state.game.firstPlayer].suit, belongsTo: player})) {
+      return false;
+    }
+    return true;
+  },
+  _isPlayerLeadingNonPointCard: function(card, player) { // Determine if player is leading the trick (for non-point cards).
+    if (this.state.game.firstPlayer == player) {
+      return this._isFirstTrickNonPointCard(card, player);
+    }
+    return this._isCardSameSuitAsLead(card, player);
+  },
+  _isFirstTrickNonPointCard: function(card, player) { // Determine if it's the first trick (for non-point cards).
+    if (this.state.game.firstTrick) {
+      return this._isTwoOfClubs(card, player);
+    }
+    return true;
+  },
+  _isTwoOfClubs: function(card, player) { // Determine if card played is the 2 of clubs.
+    if (_.isEqual(card, {value: '2', suit: 'Club'})) {
+      return true;
+    }
+    return false;
   },
   render: function() {
     return (
@@ -92,10 +157,10 @@ var HeartsTable = React.createClass({
           <li>{this.state.game.discard[4]}</li>
         </ul>
         <div className='uk-grid'>
-          <Player number={1} cards={_.where(this.state.cards, {belongsTo: 1})} playCard={this._playCard} points={this.state.game.points[1]} />
-          <Player number={2} cards={_.where(this.state.cards, {belongsTo: 2})} playCard={this._playCard} points={this.state.game.points[2]} />
-          <Player number={3} cards={_.where(this.state.cards, {belongsTo: 3})} playCard={this._playCard} points={this.state.game.points[3]} />
-          <Player number={4} cards={_.where(this.state.cards, {belongsTo: 4})} playCard={this._playCard} points={this.state.game.points[4]} />
+          <Player order={this.state.game.order} number={1} cards={_.where(this.state.cards, {belongsTo: 1})} playCard={this._playCard} points={this.state.game.points[1]} />
+          <Player order={this.state.game.order} number={2} cards={_.where(this.state.cards, {belongsTo: 2})} playCard={this._playCard} points={this.state.game.points[2]} />
+          <Player order={this.state.game.order} number={3} cards={_.where(this.state.cards, {belongsTo: 3})} playCard={this._playCard} points={this.state.game.points[3]} />
+          <Player order={this.state.game.order} number={4} cards={_.where(this.state.cards, {belongsTo: 4})} playCard={this._playCard} points={this.state.game.points[4]} />
         </div>
       </main>
     );
@@ -104,10 +169,14 @@ var HeartsTable = React.createClass({
 
 var Player = React.createClass({
   mixins: [FluxMixin],
-
+  _isTurn: function() {
+    return this.props.order[0] == this.props.number;
+  },
   _playCard: function(card) {
     return function(e) {
-      this.props.playCard({value: card.value, suit: card.suit}, this.props.number);
+      if (this._isTurn()) {
+        this.props.playCard({value: card.value, suit: card.suit}, this.props.number);
+      }
     }.bind(this);
   },
   render: function() {
