@@ -72,7 +72,7 @@ var GameStore = Fluxxor.createStore({ // Game logic goes here.
       this.firstPlayer = trickResults[0];
       this.discard = {};
       this.points[trickResults[0]] += trickResults[1];
-      this.firstTrick = false;
+      this.firstTrick = false; // Once a trick has been completed, it is no longer the first trick.
     }
 
     this.emit('change');
