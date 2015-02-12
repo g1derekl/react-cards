@@ -42,5 +42,9 @@
   },
   "browserify-shim": {
     "jquery": "global:$"
+  },
+  "jest": {
+    "scriptPreprocessor": "./__tests__/helpers/preprocessor.js",
+    "unmockedModulePathPatterns": ["react"]
   }
 }

@@ -17,7 +17,7 @@ module.exports = React.createClass({
 
     _.each(this.props.cards, function(card) {
       cards.push(
-        <div className='uk-width-large-1-5' onClick={this._playCard(card)}>{card.value + ' of ' + card.suit + 's'}</div>
+        <div className='uk-width-large-1-5 card' key={card.value + card.suit} onClick={this._playCard(card)}>{card.value + ' of ' + card.suit + 's'}</div>
       );
     }.bind(this));
 

@@ -1,15 +1,13 @@
 var React        = require('react')
-  , $            = require('jquery')
   , Fluxxor      = require('fluxxor')
-  , _            = require('lodash')
-  , flux         = require('../flux/flux.js');
+  , _            = require('lodash');
 
 var Player       = require('./player.jsx');
 
 var FluxMixin = Fluxxor.FluxMixin(React);
 var StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
-var HeartsTable = React.createClass({
+module.exports = React.createClass({
   mixins: [FluxMixin, StoreWatchMixin('CardStore', 'GameStore')],
 
   getStateFromFlux: function() {
@@ -87,5 +85,3 @@ var HeartsTable = React.createClass({
     );
   }
 });
-
-React.render(<HeartsTable flux={flux} />, document.body);
