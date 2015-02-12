@@ -35,19 +35,17 @@ var HeartsTable = React.createClass({
     while (i < totalCards) {
       for (var j=1; j <= piles; j++) {
         if (i < totalCards) { // Safety check in case of uneven division of total cards into piles.
-          this._moveCard({value: this.state.cards[i].value, suit: this.state.cards[i].suit}, null, j)
+          this._moveCard({value: this.state.cards[i].value, suit: this.state.cards[i].suit}, j)
         }
 
         i++;
       }
     }
   },
-  _moveCard: function(card, from, to, state) { // Move card to another pile.
+  _moveCard: function(card, to) { // Move card to another pile (used for dealing, passing, etc. No enforcement of rules here).
     this.getFlux().actions.moveCard({
       card: card,
-      player: from,
-      to: to,
-      state: state
+      to: to
     });
   },
   _newHand: function() { // Shuffle pile and deal them to players.
@@ -58,9 +56,15 @@ var HeartsTable = React.createClass({
     this.getFlux().actions.initializeHand({cards: this.state.cards});
   },
   _playCard: function(card, player) {
-    this._moveCard(card, player, 'discard', this.state);
+    this.getFlux().actions.playCard({
+      card: card,
+      player: player,
+      to: 'discard',
+      gameState: this.state.game
+    });
+    // this._moveCard(card, player, 'discard', this.state);
 
-    this.getFlux().actions.playCard({card: card});
+    // this.getFlux().actions.playCard({card: card});
   },
   render: function() {
     return (
