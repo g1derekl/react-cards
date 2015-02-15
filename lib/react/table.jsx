@@ -60,28 +60,50 @@ module.exports = React.createClass({
       to: 'discard',
       gameState: this.state.game
     });
-    // this._moveCard(card, player, 'discard', this.state);
+  },
+  _determinePlace: function(you) { // Determine seating position.
+    var positions = ['bottom', 'left', 'top', 'right']
 
-    // this.getFlux().actions.playCard({card: card});
+    while (positions[you - 1] != 'bottom') {
+      positions.unshift(positions.pop());
+    }
+
+    return positions;
   },
   render: function() {
+    var place = this._determinePlace(1);
+
     return (
       <main>
         <h5>Table</h5>
         <button onClick={this._newHand}>New Game</button>
-        <ul className='discard'>
-          <li>{this.state.game.discard[1]}</li>
-          <li>{this.state.game.discard[2]}</li>
-          <li>{this.state.game.discard[3]}</li>
-          <li>{this.state.game.discard[4]}</li>
-        </ul>
+        <div className='discard'>
+          <Discard place={place[0]} card={this.state.game.discard[1]} />
+          <Discard place={place[1]} card={this.state.game.discard[2]} />
+          <Discard place={place[2]} card={this.state.game.discard[3]} />
+          <Discard place={place[3]} card={this.state.game.discard[4]} />
+        </div>
         <div className='players'>
-          <Player order={this.state.game.order} number={1} cards={_.where(this.state.cards, {belongsTo: 1})} playCard={this._playCard} points={this.state.game.pointsTotal[1]} />
-          <Player order={this.state.game.order} number={2} cards={_.where(this.state.cards, {belongsTo: 2})} playCard={this._playCard} points={this.state.game.pointsTotal[2]} />
-          <Player order={this.state.game.order} number={3} cards={_.where(this.state.cards, {belongsTo: 3})} playCard={this._playCard} points={this.state.game.pointsTotal[3]} />
-          <Player order={this.state.game.order} number={4} cards={_.where(this.state.cards, {belongsTo: 4})} playCard={this._playCard} points={this.state.game.pointsTotal[4]} />
+          <Player order={this.state.game.order} place={place[0]} number={1} cards={_.where(this.state.cards, {belongsTo: 1})} playCard={this._playCard} points={this.state.game.pointsTotal[1]} />
+          <Player order={this.state.game.order} place={place[1]} number={2} cards={_.where(this.state.cards, {belongsTo: 2})} playCard={this._playCard} points={this.state.game.pointsTotal[2]} />
+          <Player order={this.state.game.order} place={place[2]} number={3} cards={_.where(this.state.cards, {belongsTo: 3})} playCard={this._playCard} points={this.state.game.pointsTotal[3]} />
+          <Player order={this.state.game.order} place={place[3]} number={4} cards={_.where(this.state.cards, {belongsTo: 4})} playCard={this._playCard} points={this.state.game.pointsTotal[4]} />
         </div>
       </main>
     );
+  }
+});
+
+var Discard = React.createClass({
+  render: function() {
+    if (this.props.card) {
+      return (
+        <img
+          className={this.props.place}
+          src={'public/cards/' + this.props.card.suit + '/' + this.props.card.value + '.svg'} 
+        />
+      )
+    }
+    return null;
   }
 });
