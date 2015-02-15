@@ -13,15 +13,15 @@
     "grunt-contrib-qunit": "~0.5.2",
     "grunt-contrib-uglify": "~0.5.0",
     "grunt-contrib-watch": "~0.6.1",
-    "grunt-react": "^0.10.0"
+    "grunt-react": "^0.10.0",
+    "react-tools": "^0.12.2"
   },
   "dependencies": {
     "express": "^4.10.1",
     "fluxxor": "^1.5.0",
     "knuth-shuffle": "^1.0.1",
     "lodash": "^2.4.1",
-    "react": "^0.12.0",
-    "react-tools": "^0.12.2"
+    "react": "^0.12.0"
   },
   "name": "flux-test",
   "description": "Testing out Facebook's Flux architecture",
