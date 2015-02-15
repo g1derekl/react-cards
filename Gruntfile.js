@@ -20,6 +20,16 @@ module.exports = function(grunt) {
         dest: 'public/build.min.js'
       }
     },
+    less: {
+      compile: {
+        options: {
+          cleancss: true
+        },
+        files: {
+          'public/main.min.css': 'lib/css/main.less'
+        }
+      }
+    },
     browserify: {
       options: {
         transform: [require('grunt-react').browserify]
@@ -31,19 +41,24 @@ module.exports = function(grunt) {
     },
     watch: {
       react: {
-        files: 'lib/**/*',
+        files: ['lib/flux/**/*', 'lib/js/**/*', 'lib/react/**/*'],
         tasks: ['browserify', 'uglify']
+      },
+      css: {
+        files: 'lib/css/**/*',
+        tasks: ['less']
       }
     },
   });
 
   // These plugins provide necessary tasks.
+  grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-react');
 
   // Default task.
-  grunt.registerTask('default', ['browserify', 'uglify']);
+  grunt.registerTask('default', ['browserify', 'less', 'uglify']);
 
 };
