@@ -19,7 +19,8 @@
     "fluxxor": "^1.5.0",
     "knuth-shuffle": "^1.0.1",
     "lodash": "^2.4.1",
-    "react": "^0.12.0"
+    "react": "^0.12.0",
+    "react-tools": "^0.12.2"
   },
   "name": "flux-test",
   "description": "Testing out Facebook's Flux architecture",
@@ -45,6 +46,8 @@
   },
   "jest": {
     "scriptPreprocessor": "./__tests__/helpers/preprocessor.js",
-    "unmockedModulePathPatterns": ["react"]
+    "unmockedModulePathPatterns": [
+      "./node_modules/react"
+    ]
   }
 }

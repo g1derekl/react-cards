@@ -76,10 +76,10 @@ module.exports = React.createClass({
           <li>{this.state.game.discard[4]}</li>
         </ul>
         <div className='uk-grid'>
-          <Player order={this.state.game.order} number={1} cards={_.where(this.state.cards, {belongsTo: 1})} playCard={this._playCard} points={this.state.game.points[1]} />
-          <Player order={this.state.game.order} number={2} cards={_.where(this.state.cards, {belongsTo: 2})} playCard={this._playCard} points={this.state.game.points[2]} />
-          <Player order={this.state.game.order} number={3} cards={_.where(this.state.cards, {belongsTo: 3})} playCard={this._playCard} points={this.state.game.points[3]} />
-          <Player order={this.state.game.order} number={4} cards={_.where(this.state.cards, {belongsTo: 4})} playCard={this._playCard} points={this.state.game.points[4]} />
+          <Player order={this.state.game.order} number={1} cards={_.where(this.state.cards, {belongsTo: 1})} playCard={this._playCard} points={this.state.game.pointsTotal[1]} />
+          <Player order={this.state.game.order} number={2} cards={_.where(this.state.cards, {belongsTo: 2})} playCard={this._playCard} points={this.state.game.pointsTotal[2]} />
+          <Player order={this.state.game.order} number={3} cards={_.where(this.state.cards, {belongsTo: 3})} playCard={this._playCard} points={this.state.game.pointsTotal[3]} />
+          <Player order={this.state.game.order} number={4} cards={_.where(this.state.cards, {belongsTo: 4})} playCard={this._playCard} points={this.state.game.pointsTotal[4]} />
         </div>
       </main>
     );
