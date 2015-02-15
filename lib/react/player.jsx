@@ -17,9 +17,7 @@ module.exports = React.createClass({
 
     _.each(this.props.cards, function(card) {
       cards.push(
-        <div className='uk-width-large-1-5 card' key={card.value + card.suit} onClick={this._playCard(card)}>
-          {card.value + ' of ' + card.suit + 's'}
-        </div>
+        <object data={'public/cards/' + card.suit + '/' + card.value + '.svg'} type="image/svg+xml"></object>
       );
     }.bind(this));
 
@@ -30,9 +28,9 @@ module.exports = React.createClass({
     }
 
     return (
-      <div className='uk-width-large-1-2'>
+      <div className='hand'>
         <h5>Player {this.props.number} {turn} - {this.props.points} points</h5>
-        <div className='uk-grid'>
+        <div className='cards'>
           {cards}
         </div>
       </div>

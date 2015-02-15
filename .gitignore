@@ -1,2 +1,4 @@
 node_modules/
-public/
+public/build.js
+public/build.min.js
+public/main.min.css

@@ -69,13 +69,13 @@ module.exports = React.createClass({
       <main>
         <h5>Table</h5>
         <button onClick={this._newHand}>New Game</button>
-        <ul>
+        <ul className='discard'>
           <li>{this.state.game.discard[1]}</li>
           <li>{this.state.game.discard[2]}</li>
           <li>{this.state.game.discard[3]}</li>
           <li>{this.state.game.discard[4]}</li>
         </ul>
-        <div className='uk-grid'>
+        <div className='players'>
           <Player order={this.state.game.order} number={1} cards={_.where(this.state.cards, {belongsTo: 1})} playCard={this._playCard} points={this.state.game.pointsTotal[1]} />
           <Player order={this.state.game.order} number={2} cards={_.where(this.state.cards, {belongsTo: 2})} playCard={this._playCard} points={this.state.game.pointsTotal[2]} />
           <Player order={this.state.game.order} number={3} cards={_.where(this.state.cards, {belongsTo: 3})} playCard={this._playCard} points={this.state.game.pointsTotal[3]} />
