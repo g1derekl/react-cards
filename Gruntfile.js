@@ -42,7 +42,7 @@ module.exports = function(grunt) {
     watch: {
       react: {
         files: ['lib/flux/**/*', 'lib/js/**/*', 'lib/react/**/*'],
-        tasks: ['browserify', 'uglify']
+        tasks: ['browserify']
       },
       css: {
         files: 'lib/css/**/*',

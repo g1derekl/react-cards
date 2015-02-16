@@ -19,39 +19,8 @@ module.exports = React.createClass({
   componentDidMount: function() {
     this._newHand();
   },
-  _dealCards: function(piles, perPile) { // Deal cards, given a nunmber of piles and a number of cards per pile.
-    var totalCards;
-
-    if (perPile) {
-      totalCards = piles * perPile;
-    }
-    else {
-      totalCards = this.state.cards.length;
-    }
-
-    var i = 0;
-    while (i < totalCards) {
-      for (var j=1; j <= piles; j++) {
-        if (i < totalCards) { // Safety check in case of uneven division of total cards into piles.
-          this._moveCard({value: this.state.cards[i].value, suit: this.state.cards[i].suit}, j)
-        }
-
-        i++;
-      }
-    }
-  },
-  _moveCard: function(card, to) { // Move card to another pile (used for dealing, passing, etc. No enforcement of rules here).
-    this.getFlux().actions.moveCard({
-      card: card,
-      to: to
-    });
-  },
   _newHand: function() { // Shuffle pile and deal them to players.
-    this.getFlux().actions.shufflePile();
-
-    this._dealCards(4);
-
-    this.getFlux().actions.initializeHand({cards: this.state.cards});
+    this.getFlux().actions.initializeHand();
   },
   _playCard: function(card, player) {
     this.getFlux().actions.playCard({

@@ -8,7 +8,7 @@ module.exports = React.createClass({
   componentWillReceiveProps: function(newProps) {
     var cards = [];
 
-    var sortedCards = this._order(newProps.cards);
+    var sortedCards = this._orderHand(newProps.cards);
 
     _.each(sortedCards, function(card) {
       cards.push(
@@ -32,7 +32,7 @@ module.exports = React.createClass({
       }
     }.bind(this);
   },
-  _order: function(cards) { // Sort cards to be more user-readable.
+  _orderHand: function(cards) { // Sort cards to be more user-readable.
     var groupBySuit = _.groupBy(cards, function(card) {
       return card.suit;
     });
@@ -47,10 +47,21 @@ module.exports = React.createClass({
 
     var sorted = [];
 
-    return sorted.concat(groupBySuit['Club'])
-                 .concat(groupBySuit['Diamond'])
-                 .concat(groupBySuit['Spade'])
-                 .concat(groupBySuit['Heart']);
+    // Check if the player is void of any suit (i.e. does not have any of the suit).
+    if (groupBySuit['Club']) {
+      sorted = sorted.concat(groupBySuit['Club']);
+    }
+    if (groupBySuit['Diamond']) {
+      sorted = sorted.concat(groupBySuit['Diamond']);
+    }
+    if (groupBySuit['Spade']) {
+      sorted = sorted.concat(groupBySuit['Spade']);
+    }
+    if (groupBySuit['Heart']) {
+      sorted = sorted.concat(groupBySuit['Heart']);
+    }
+
+    return sorted;
   },
   render: function() {
     var turn = '';
