@@ -5,7 +5,7 @@ var Card  = require('./card.jsx');
 
 module.exports = React.createClass({
   getInitialState: function() {
-    return {cards: null, highlighted: [], maxHighlight: this._getMaxHighlight()}
+    return {cards: null, highlighted: [], passedCards: [], maxHighlight: this._getMaxHighlight()}
   },
   componentWillReceiveProps: function(newProps) {
     return this._organizeCards(newProps);
@@ -47,7 +47,7 @@ module.exports = React.createClass({
     }
     return this.props.order[0] == this.props.number;
   },
-  _highlightCard: function(card) {
+  _highlightCard: function(card, callback) {
     var highlighted = this.state.highlighted;
 
     if (highlighted.length === this.state.maxHighlight) {
@@ -55,24 +55,49 @@ module.exports = React.createClass({
     }
     highlighted.push(card);
 
-    return this.setState({highlighted: highlighted});
+    return this.setState({
+      highlighted: highlighted
+    }, callback);
+  },
+  _unHighlightCard: function(card, callback) {
+    var highlighted = _.reject(this.state.highlighted, card);
+
+    return this.setState({
+      highlighted: highlighted
+    }, callback);
   },
   // If a card is not highlighted, highlight card. If it's already highlighted, play the card.
   _handleClick: function(card) {
     return function(e) {
+      var finish = function() {
+        return this._organizeCards(this.props);
+      }.bind(this);
+
       if (!_.find(this.state.highlighted, card)) {
-        this._highlightCard(card);
+        this._highlightCard(card, finish);
+      }
+      else if (_.find(this.state.highlighted, card) && this.props.game.passPhase) {
+        this._unHighlightCard(card, finish);
       }
       else {
         this._playCard(card);
+        finish();
       }
-      return this._organizeCards(this.props);
+      
     }.bind(this);
   },
   _playCard: function(card) {
-    if (this._isTurn()) {
+    if (this._isTurn() && !this.props.game.passPhase) {
       this.props.playCard(card, this.props.number);
     }
+  },
+  _passCards: function() {
+    _.each(this.state.highlighted, function(card) {
+      this.props.playCard(card, this.props.number);
+    }.bind(this));
+  },
+  _checkPass: function() {
+    return !(this.props.game.passPhase && this.state.highlighted.length === 3)
   },
   _orderHand: function(cards) { // Sort cards to be more user-readable.
     var groupBySuit = _.groupBy(cards, function(card) {
@@ -117,6 +142,7 @@ module.exports = React.createClass({
 
     return (
       <div className={'hand ' + this.props.place}>
+        <button disabled={this._checkPass()} onClick={this._passCards}>Pass cards</button>
         <h5>Player {this.props.number} {turn} - {this.props.game.pointsTotal[this.props.number]} points</h5>
         <span className='cards'>
           {this.state.cards}
