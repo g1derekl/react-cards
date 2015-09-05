@@ -23,6 +23,9 @@ module.exports = React.createClass({
     this.setState({cards: cards});
   },
   _isTurn: function() {
+    if (this.props.game.passPhase) {
+      return true;
+    }
     return this.props.order[0] == this.props.number;
   },
   _playCard: function(card) {
@@ -47,7 +50,7 @@ module.exports = React.createClass({
 
     var sorted = [];
 
-    // Check if the player is void of any suit (i.e. does not have any of the suit).
+    // Check if the player is void of any suit (i.e. does not have any of that suit).
     if (groupBySuit['Club']) {
       sorted = sorted.concat(groupBySuit['Club']);
     }
@@ -66,13 +69,16 @@ module.exports = React.createClass({
   render: function() {
     var turn = '';
 
-    if (this._isTurn()) {
+    if (this.props.game.passPhase) {
+      turn = '(Pass 3 cards ' + this.props.game.passDirection + ')';
+    }
+    else if (this._isTurn()) {
       turn = '(Your turn!)';
     }
 
     return (
       <div className={'hand ' + this.props.place}>
-        <h5>Player {this.props.number} {turn} - {this.props.points} points</h5>
+        <h5>Player {this.props.number} {turn} - {this.props.game.pointsTotal[this.props.number]} points</h5>
         <span className='cards'>
           {this.state.cards}
         </span>
