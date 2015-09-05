@@ -1,26 +1,45 @@
 var React = require('react')
   , _     = require('lodash');
 
+var Card  = require('./card.jsx');
+
 module.exports = React.createClass({
   getInitialState: function() {
-    return {cards: null}
+    return {cards: null, highlighted: [], maxHighlight: this._getMaxHighlight()}
   },
   componentWillReceiveProps: function(newProps) {
+    return this._organizeCards(newProps);
+  },
+  _organizeCards: function(newProps) {
     var cards = [];
 
     var sortedCards = this._orderHand(newProps.cards);
 
     _.each(sortedCards, function(card) {
+
+      var isHighlighted = (_.find(this.state.highlighted, card) || (card.highlighted && this.props.game.passPhase)) ? 'highlighted': '';
+
       cards.push(
         <img
           key={card.suit + card.value}
-          onClick={this._playCard({value: card.value, suit: card.suit})}
-          src={'public/cards/' + card.suit + '/' + card.value + '.svg'} 
+          onClick={this._handleClick(card)}
+          src={'public/cards/' + card.suit + '/' + card.value + '.svg'}
+          className={isHighlighted}
         />
       );
     }.bind(this));
 
-    this.setState({cards: cards});
+    if (this.props.game.passPhase && !newProps.game.passPhase) {
+      this.setState({highlighted: []});
+    }
+
+    this.setState({cards: cards, maxHighlight: this._getMaxHighlight()});
+  },
+  _getMaxHighlight: function() {
+    if (this.props.game.passPhase) {
+      return 3;
+    }
+    return 1;
   },
   _isTurn: function() {
     if (this.props.game.passPhase) {
@@ -28,12 +47,32 @@ module.exports = React.createClass({
     }
     return this.props.order[0] == this.props.number;
   },
-  _playCard: function(card) {
+  _highlightCard: function(card) {
+    var highlighted = this.state.highlighted;
+
+    if (highlighted.length === this.state.maxHighlight) {
+      highlighted.shift();
+    }
+    highlighted.push(card);
+
+    return this.setState({highlighted: highlighted});
+  },
+  // If a card is not highlighted, highlight card. If it's already highlighted, play the card.
+  _handleClick: function(card) {
     return function(e) {
-      if (this._isTurn()) {
-        this.props.playCard({value: card.value, suit: card.suit}, this.props.number);
+      if (!_.find(this.state.highlighted, card)) {
+        this._highlightCard(card);
       }
+      else {
+        this._playCard(card);
+      }
+      return this._organizeCards(this.props);
     }.bind(this);
+  },
+  _playCard: function(card) {
+    if (this._isTurn()) {
+      this.props.playCard(card, this.props.number);
+    }
   },
   _orderHand: function(cards) { // Sort cards to be more user-readable.
     var groupBySuit = _.groupBy(cards, function(card) {

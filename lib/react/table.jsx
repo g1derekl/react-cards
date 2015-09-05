@@ -53,15 +53,24 @@ module.exports = React.createClass({
       var direction = this.state.game.passDirection;
 
       to = passDirectionMap[player][direction];
+
+      this.getFlux().actions.passCard({
+        card: card,
+        cards: this.state.cards,
+        to: to,
+        gameState: this.state.game
+      });
+    }
+    else {
+      this.getFlux().actions.playCard({
+        card: card,
+        cards: this.state.cards,
+        player: player,
+        to: to,
+        gameState: this.state.game
+      });
     }
 
-    this.getFlux().actions.playCard({
-      card: card,
-      cards: this.state.cards,
-      player: player,
-      to: to,
-      gameState: this.state.game
-    });
   },
   _determinePlace: function(you) { // Determine seating position.
     var positions = ['bottom', 'left', 'top', 'right']
