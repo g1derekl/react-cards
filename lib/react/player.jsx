@@ -79,7 +79,7 @@ module.exports = React.createClass({
       else if (_.find(this.state.highlighted, card) && this.props.game.passPhase) {
         this._unHighlightCard(card, finish);
       }
-      else {
+      else if (this._isTurn() && !this.props.game.passPhase) {
         this._playCard(card);
         finish();
       }
@@ -87,17 +87,23 @@ module.exports = React.createClass({
     }.bind(this);
   },
   _playCard: function(card) {
-    if (this._isTurn() && !this.props.game.passPhase) {
-      this.props.playCard(card, this.props.number);
-    }
+    this.props.playCard(card, this.props.number);
+
+    this.setState({
+      passedCards: []
+    });
   },
   _passCards: function() {
     _.each(this.state.highlighted, function(card) {
       this.props.playCard(card, this.props.number);
     }.bind(this));
+
+    this.setState({
+      passedCards: this.state.highlighted
+    });
   },
   _checkPass: function() {
-    return !(this.props.game.passPhase && this.state.highlighted.length === 3)
+    return !(this.props.game.passPhase && this.state.highlighted.length === 3) || this.state.passedCards.length === 3;
   },
   _orderHand: function(cards) { // Sort cards to be more user-readable.
     var groupBySuit = _.groupBy(cards, function(card) {
