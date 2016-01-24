@@ -4,8 +4,6 @@ module.exports = function(app, io) {
 
   tables.on('connection', function(socket, data) {
 
-    console.log(socket.handshake, '---------------');
-
     var table = socket.handshake.query.table;
 
     socket.emit('welcome', {message: 'Welcome to room'});

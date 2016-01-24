@@ -1,9 +1,10 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var Router = require('react-router').Router;
-var Route = require('react-router').Route;
-var Link = require('react-router').Link;
-var browserHistory = require('react-router').browserHistory;
+var ReactRouter = require('react-router');
+var Router = ReactRouter.Router;
+var Route = ReactRouter.Route;
+var Link = ReactRouter.Link;
+var browserHistory = ReactRouter.browserHistory;
 
 var socket = require('./socket/socket.jsx');
 
