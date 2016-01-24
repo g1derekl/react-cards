@@ -4,6 +4,8 @@ var http = require('http');
 
 var app = express();
 
+app.config = require('./config.js')[process.env.NODE_ENV].server;
+
 app.use('/public', express.static('public'));
 
 app.get('/', function (req, res) {
@@ -20,6 +22,6 @@ io.on('connection', function (socket) {
   });
 });
 
-server.listen(3000, function() {
-  console.log('Server listening on port 3000');
+server.listen(app.config.port, function() {
+  console.log('Server listening on ' + app.config.host);
 });
