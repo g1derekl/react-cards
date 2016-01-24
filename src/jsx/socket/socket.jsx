@@ -1,3 +1,7 @@
 var io = require('socket.io-client');
 
-var socket = io('/tables', {query: {table: 'blah'}});
+module.exports = function socketConnect(tableId) {
+
+  var socket = io('/tables', {query: {table: tableId}});
+
+};
