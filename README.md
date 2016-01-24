@@ -1,4 +1,4 @@
-flux-test
+react-cards
 =========
 
 A simple card game engine, testing out the capabilities of Facebook's Flux architecture.
