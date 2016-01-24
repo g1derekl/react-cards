@@ -32,14 +32,14 @@ gulp.task('styles', function(){
 gulp.task('scripts', function(){
 
   var b = browserify({
-    entries: 'src/js/index.jsx',
+    entries: 'src/jsx/index.jsx',
     debug: true,
     // defining transforms here will avoid crashing your stream
     transform: [reactify]
   });
 
   return b.bundle()
-    .pipe(source('src/js/index.jsx'))
+    .pipe(source('src/jsx/index.jsx'))
     .pipe(buffer())
     .pipe(uglify())
     .pipe(rename('public/index.min.js'))
@@ -49,14 +49,12 @@ gulp.task('scripts', function(){
 gulp.task('start', ['scripts'], function () {
   return nodemon({
     script: 'server.js',
-    watch: ['src/js', 'server.js'],
-    ext: 'jsx',
-    env: { 'NODE_ENV': 'development' },
-    tasks: ['scripts']
+    watch: ['server.js'],
+    env: { 'NODE_ENV': 'development' }
   });
 });
 
 gulp.task('default', ['styles', 'start'], function() {
   gulp.watch("src/styles/**/*.scss", ['styles']);
-  // gulp.watch("src/js/**/*.js", ['scripts']);
+  gulp.watch("src/jsx/**/*.jsx", ['scripts']);
 });
