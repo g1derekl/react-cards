@@ -8,19 +8,14 @@ app.config = require('./config.js')[process.env.NODE_ENV].server;
 
 app.use('/public', express.static('public'));
 
-app.get('/', function (req, res) {
+app.get('/table/:name', function (req, res) {
   res.sendFile(__dirname + '/public/index.html');
 });
 
-var io = socketIO(server);
 var server = http.Server(app);
+var io = socketIO(server);
 
-io.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
-});
+require('./server/socket.js')(app, io);
 
 server.listen(app.config.port, function() {
   console.log('Server listening on ' + app.config.host);

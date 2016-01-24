@@ -49,7 +49,7 @@ gulp.task('scripts', function(){
 gulp.task('start', ['scripts'], function () {
   return nodemon({
     script: 'server.js',
-    watch: ['server.js', 'config.js'],
+    watch: ['server.js', 'config.js', 'server/'],
     env: { 'NODE_ENV': 'development' }
   });
 });
