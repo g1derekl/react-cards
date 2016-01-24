@@ -6,8 +6,6 @@ var Route = ReactRouter.Route;
 var Link = ReactRouter.Link;
 var browserHistory = ReactRouter.browserHistory;
 
-var foo = 'blah';
-
 var socket = require('./socket/socket.jsx');
 
 var Table = React.createClass({
