@@ -41,8 +41,10 @@ gulp.task('scripts', function(){
   return b.bundle()
     .pipe(source('src/jsx/index.jsx'))
     .pipe(buffer())
+    .pipe(sourcemaps.init())
     .pipe(uglify())
     .pipe(rename('public/index.min.js'))
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest('./'));
 });
 
