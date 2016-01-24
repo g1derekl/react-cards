@@ -16,7 +16,7 @@ app.get('/', function(req, res) {
 
 app.get('/create-table', function(req, res) {
 
-  var tableId = hmac.update(new Date().toISOString()).digest('hex');
+  var tableId = hmac.update(new Date().getTime()).digest('hex');
 
   res.redirect('/table/' + tableId);
 });
