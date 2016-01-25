@@ -10,7 +10,7 @@ var browserHistory = ReactRouter.browserHistory;
 
 var Table = React.createClass({
   componentDidMount: function() {
-    socket(this.props.params.tableName);
+    this.socket = socket(this.props.params.tableName);
   },
   render: function() {
     return <div>Hello world</div>;
