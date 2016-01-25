@@ -23,6 +23,6 @@ module.exports = React.createClass({
     this.setState(state);
   },
   render: function() {
-    return <div>{this.state.players}</div>;
+    return <div>{this.state.players.map(function(player) {return <p key={player}>{player}</p>})}</div>;
   }
 });

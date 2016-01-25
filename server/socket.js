@@ -9,6 +9,8 @@ module.exports = function(app, io) {
 
     socket.emit('welcome', {message: 'Welcome to Box of Cards'});
 
-    io.emit('players', io.nsps['/tables'].adapter.rooms[table]);
+    console.log(io.nsps['/tables'].adapter.rooms[table].sockets, '==============');
+
+    tables.to(table).emit('players', io.nsps['/tables'].adapter.rooms[table].sockets);
   });
 };
