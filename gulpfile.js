@@ -32,14 +32,14 @@ gulp.task('styles', function(){
 gulp.task('scripts', function(){
 
   var b = browserify({
-    entries: 'src/jsx/index.jsx',
+    entries: 'src/js/index.jsx',
     debug: true,
     // defining transforms here will avoid crashing your stream
     transform: [reactify]
   });
 
   return b.bundle()
-    .pipe(source('src/jsx/index.jsx'))
+    .pipe(source('src/js/index.jsx'))
     .pipe(buffer())
     .pipe(sourcemaps.init())
     .pipe(uglify())
@@ -58,5 +58,5 @@ gulp.task('start', ['scripts'], function () {
 
 gulp.task('default', ['styles', 'start'], function() {
   gulp.watch("src/styles/**/*.scss", ['styles']);
-  gulp.watch("src/jsx/**/*.jsx", ['scripts']);
+  gulp.watch(["src/js/**/*.jsx", "src/js/**/*.js"], ['scripts']);
 });
