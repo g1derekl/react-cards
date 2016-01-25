@@ -1,12 +1,28 @@
 var React = require('react');
 
 var socket = require('../socket/socket.js');
+var alt = require('./alt.js');
+var connection = require('./connection.js');
+
+var PlayerStore = alt.PlayerStore;
+var PlayerActions = alt.PlayerActions;
 
 module.exports = React.createClass({
+  getInitialState: function() {
+    return PlayerStore.getState();
+  },
   componentDidMount: function() {
-    this.socket = socket(this.props.params.tableName);
+    connection(socket(this.props.params.tableName), PlayerActions); // Pass socket instance and actions to handler.
+
+    PlayerStore.listen(this.onChange);
+  },
+  componentWillUnmount: function() {
+    PlayerStore.unlisten(this.onChange);
+  },
+  onChange: function(state) {
+    this.setState(state);
   },
   render: function() {
-    return <div>Hello world</div>;
+    return <div>{this.state.players}</div>;
   }
 });
