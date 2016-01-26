@@ -1,6 +1,6 @@
 var _ = require('lodash');
 
-module.exports = function connection(socket, actions) {
+module.exports = function connection(socket, alt) {
 
   socket.on('players', function(data) {
     
@@ -8,8 +8,12 @@ module.exports = function connection(socket, actions) {
       return id;
     });
 
-    actions.updatePlayerList(players);
+    alt.PlayerActions.updatePlayerList(players);
   });
 
-  return;
+  socket.on('cards', function(data) {
+
+    alt.CardActions.updateCards(data);
+
+  });
 };

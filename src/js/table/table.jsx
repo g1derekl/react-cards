@@ -8,14 +8,16 @@ var connection = require('./connection.js');
 
 var PlayerStore = alt.PlayerStore;
 var PlayerActions = alt.PlayerActions;
+var CardStore = alt.CardStore;
+var CardActions = alt.CardActions;
 
 var Card = React.createClass({
-  getInitialState: function() {
-    return {
-      x: 0,
-      y: 0
-    };
-  },
+  // getInitialState: function() {
+  //   return {
+  //     x: this.props.x,
+  //     y: this.props.y
+  //   };
+  // },
   componentDidMount: function() {
     interact(ReactDOM.findDOMNode(this))
       .draggable({
@@ -27,23 +29,35 @@ var Card = React.createClass({
       });
   },
   _transform: function() {
-    return "translate(" + this.state.x + "px, " + this.state.y + "px)";
+    return "translate(" + this.props.x + "px, " + this.props.y + "px)";
   },
   _dragHandler: function(e) {
-    var x = this.state.x + e.dx;
-    var y = this.state.y + e.dy;
+    var x = this.props.x + e.dx;
+    var y = this.props.y + e.dy;
 
-    this.setState({x: x, y: y});
+    CardActions.moveCard({suit: this.props.suit, value: this.props.value, x: x, y: y});
   },
   render: function() {
-    return <img className="card" src="/public/cards/Spade/Q.svg" style={{transform: this._transform()}} />
+    return <img className="card" src={"/public/cards/" + this.props.suit + "/" + this.props.value + ".svg"} style={{transform: this._transform()}} />
   }
 });
 
 var Surface = React.createClass({
+  getInitialState: function() {
+    return CardStore.getState();
+  },
+  componentDidMount: function() {
+    CardStore.listen(this.onChange);
+  },
+  componentWillUnmount: function() {
+    CardStore.unlisten(this.onChange);
+  },
+  onChange: function(state) {
+    this.setState(state);
+  },
   render: function() {
     return <div className="surface">
-      <Card />
+      {this.state.cards.map(function(card) {return <Card key={card.value + card.suit} suit={card.suit} value={card.value} x={card.x} y={card.y} />})}
     </div>
   }
 });
@@ -53,7 +67,7 @@ module.exports = React.createClass({
     return PlayerStore.getState();
   },
   componentDidMount: function() {
-    connection(socket(this.props.params.tableName), PlayerActions); // Pass socket instance and actions to handler.
+    connection(socket(this.props.params.tableName), alt); // Pass socket instance and actions to handler.
 
     PlayerStore.listen(this.onChange);
   },

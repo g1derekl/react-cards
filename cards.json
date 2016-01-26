@@ -1,4 +1,4 @@
-module.exports = [
+[
   {"value":"A","suit":"Heart"},
   {"value":"2","suit":"Heart"},
   {"value":"3","suit":"Heart"},
@@ -51,4 +51,4 @@ module.exports = [
   {"value":"J","suit":"Spade"},
   {"value":"Q","suit":"Spade"},
   {"value":"K","suit":"Spade"}
-];
+]

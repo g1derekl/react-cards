@@ -30,29 +30,40 @@ var PlayerStore = alt.createStore({
   }
 });
 
-var CardActions = alt.createActions({
-  moveCard: function moveCard(card) {
-    return card;
-  }
-});
+var CardActions = alt.generateActions('updateCards', 'moveCard');
 
 var CardStore = alt.createStore({
   displayName: 'CardStore',
 
   bindListeners: {
-    moveCard: PlayerActions.updatePlayerList
+    updateCards: CardActions.updateCards,
+    moveCard: CardActions.moveCard
   },
 
   state: {
     cards: []
   },
 
+  updateCards: function updateCards(cards) {
+    this.setState({
+      cards: cards
+    });
+  },
+
   moveCard: function moveCard(card) {
-    return;
+    var cards = this.state.cards;
+    var cardToMove = _.find(cards, {suit: card.suit, value: card.value});
+
+    cardToMove.x = card.x;
+    cardToMove.y = card.y;
+
+    this.setState({cards: cards});
   }
 });
 
 module.exports = {
+  PlayerActions: PlayerActions,
   PlayerStore: PlayerStore,
-  PlayerActions: PlayerActions
+  CardActions: CardActions,
+  CardStore: CardStore
 };
