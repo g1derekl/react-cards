@@ -32,7 +32,7 @@ module.exports = React.createClass({
   },
   render: function() {
     return <div>
-      {this.state.players.map(function(player) {return <p key={player}>{player}</p>})}
+      {this.state.players.map(function(player) {return <div key={player}>{player}</div>})}
       <Surface />
     </div>;
   }
