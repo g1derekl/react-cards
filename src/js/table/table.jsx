@@ -7,6 +7,14 @@ var connection = require('./connection.js');
 var PlayerStore = alt.PlayerStore;
 var PlayerActions = alt.PlayerActions;
 
+var Surface = React.createClass({
+  render: function() {
+    return <div className="surface">
+
+    </div>
+  }
+});
+
 module.exports = React.createClass({
   getInitialState: function() {
     return PlayerStore.getState();
@@ -23,6 +31,9 @@ module.exports = React.createClass({
     this.setState(state);
   },
   render: function() {
-    return <div>{this.state.players.map(function(player) {return <p key={player}>{player}</p>})}</div>;
+    return <div>
+      {this.state.players.map(function(player) {return <p key={player}>{player}</p>})}
+      <Surface />
+    </div>;
   }
 });

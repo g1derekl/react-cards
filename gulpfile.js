@@ -23,10 +23,10 @@ gulp.task('styles', function(){
     }))
     .pipe(sass())
     .pipe(autoprefixer('last 2 versions'))
-    // .pipe(gulp.dest('public/styles/'))
+    // .pipe(gulp.dest('public/'))
     .pipe(rename({suffix: '.min'}))
     .pipe(cssnano())
-    .pipe(gulp.dest('public/styles/'));
+    .pipe(gulp.dest('public/'));
 });
 
 gulp.task('scripts', function(){
