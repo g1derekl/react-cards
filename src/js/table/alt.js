@@ -30,6 +30,28 @@ var PlayerStore = alt.createStore({
   }
 });
 
+var CardActions = alt.createActions({
+  moveCard: function moveCard(card) {
+    return card;
+  }
+});
+
+var CardStore = alt.createStore({
+  displayName: 'CardStore',
+
+  bindListeners: {
+    moveCard: PlayerActions.updatePlayerList
+  },
+
+  state: {
+    cards: []
+  },
+
+  moveCard: function moveCard(card) {
+    return;
+  }
+});
+
 module.exports = {
   PlayerStore: PlayerStore,
   PlayerActions: PlayerActions
