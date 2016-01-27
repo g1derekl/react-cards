@@ -1,6 +1,8 @@
 alias node=~/app-root/data/node-v4.2.6-linux-x64/bin/node
 alias npm=~/app-root/data/node-v4.2.6-linux-x64/bin/npm
 
+export $HOME=$HOME/app-root/data
+
 cd ~/app-root/runtime/repo
 
 npm install
