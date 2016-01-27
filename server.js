@@ -31,5 +31,5 @@ var io = socketIO(server);
 require('./server/socket.js')(app, io);
 
 server.listen(app.config.port, app.config.host, function() {
-  console.log('Server listening on ' + app.config.host);
+  console.log('Express server started on port %s at %s', server.address().port, server.address().address);
 });
