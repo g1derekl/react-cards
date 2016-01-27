@@ -1,10 +1,4 @@
-alias node=~/app-root/data/node-v4.2.6-linux-x64/bin/node
-alias npm=~/app-root/data/node-v4.2.6-linux-x64/bin/npm
-
-node -v
-npm -v
-
 cd ~/app-root/runtime/repo
 
-HOME=$HOME/app-root/data npm install
-npm start
+HOME=$HOME/app-root/data ~/app-root/data/node-v4.2.6-linux-x64/bin/npm install
+~/app-root/data/node-v4.2.6-linux-x64/bin/npm start
