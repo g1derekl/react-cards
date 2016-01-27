@@ -17,13 +17,17 @@ module.exports = function(app, io) {
 
     var player = {id: socket.id, name: query.name};
 
+    var table;
+
     if (!openTables[tableId]) {
       openTables[tableId] = {players: [player]};
 
-      game(tables, openTables[tableId]); // Set up game
+      game.setup(tables, openTables[tableId]); // Set up game
+
+      table = openTables[tableId];
     }
     else {
-      var table = openTables[tableId];
+      table = openTables[tableId];
 
       table.players.push(player);
 
@@ -33,5 +37,9 @@ module.exports = function(app, io) {
     socket.emit('welcome', {message: 'Welcome to Box of Cards'});
 
     tables.to(tableId).emit('players', io.nsps['/tables'].adapter.rooms[tableId].sockets);
+
+    socket.on('updateCards', function(cards) {
+      game.updateCards(socket, table, cards);
+    });
   });
 };

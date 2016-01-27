@@ -35,7 +35,7 @@ var Card = React.createClass({
     var x = this.props.x + e.dx;
     var y = this.props.y + e.dy;
 
-    CardActions.moveCard({suit: this.props.suit, value: this.props.value, x: x, y: y});
+    CardActions.moveCard({suit: this.props.suit, value: this.props.value, x: x, y: y, socket: this.props.socket});
   },
   render: function() {
     return <img className="card" src={"/public/cards/" + this.props.suit + "/" + this.props.value + ".svg"} style={{transform: this._transform()}} />
@@ -56,19 +56,21 @@ var Surface = React.createClass({
     this.setState(state);
   },
   render: function() {
+    var self = this;
     return <div className="surface">
-      {this.state.cards.map(function(card) {return <Card key={card.value + card.suit} suit={card.suit} value={card.value} x={card.x} y={card.y} />})}
+      {this.state.cards.map(function(card) {return <Card socket={self.props.socket} key={card.value + card.suit} suit={card.suit} value={card.value} x={card.x} y={card.y} />})}
     </div>
   }
 });
 
 module.exports = React.createClass({
   getInitialState: function() {
+    this.socket = socket(this.props.params.tableName);
+    connection(this.socket, alt); // Pass socket instance and actions to handler.
+
     return PlayerStore.getState();
   },
   componentDidMount: function() {
-    connection(socket(this.props.params.tableName), alt); // Pass socket instance and actions to handler.
-
     PlayerStore.listen(this.onChange);
   },
   componentWillUnmount: function() {
@@ -80,7 +82,7 @@ module.exports = React.createClass({
   render: function() {
     return <div>
       {this.state.players.map(function(player) {return <div key={player}>{player}</div>})}
-      <Surface />
+      <Surface socket={this.socket} />
     </div>;
   }
 });

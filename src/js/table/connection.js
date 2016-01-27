@@ -1,3 +1,5 @@
+// Handle incoming socket events
+
 var _ = require('lodash');
 
 module.exports = function connection(socket, alt) {
@@ -12,8 +14,12 @@ module.exports = function connection(socket, alt) {
   });
 
   socket.on('cards', function(data) {
-
     alt.CardActions.updateCards(data);
-
   });
+
+  return {
+    sendMove: function(cards) {
+      socket.emit('updateCards', cards);
+    }
+  }
 };

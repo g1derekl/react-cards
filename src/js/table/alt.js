@@ -58,6 +58,8 @@ var CardStore = alt.createStore({
     cardToMove.y = card.y;
 
     this.setState({cards: cards});
+
+    card.socket.emit('updateCards', cards);
   }
 });
 
