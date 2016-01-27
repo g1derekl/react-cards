@@ -16,12 +16,12 @@ app.get('/', function(req, res) {
 app.get('/create-table', function(req, res) {
 
   var hmac = crypto.createHmac('md5', 'a secret');
-  var tableId = hmac.update(new Date().getTime().toString()).digest('base64');
+  var tableId = hmac.update(new Date().getTime().toString()).digest('hex');
 
   res.redirect('/table/' + tableId);
 });
 
-app.get('/table/:id', function (req, res) {
+app.get('/table/:id', function(req, res) {
   res.sendFile(__dirname + '/public/index.html');
 });
 
