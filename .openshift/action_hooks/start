@@ -1,1 +1,5 @@
-export PATH=$PATH:~/app-root/data/node
+alias node=/var/lib/openshift/56a827227628e1afd500004b/app-root/data/node-v4.2.6-linux-x64/bin/node
+alias npm=/var/lib/openshift/56a827227628e1afd500004b/app-root/data/node-v4.2.6-linux-x64/bin/npm
+
+npm install
+npm start
