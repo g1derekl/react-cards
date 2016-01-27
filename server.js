@@ -30,6 +30,6 @@ var io = socketIO(server);
 
 require('./server/socket.js')(app, io);
 
-server.listen(app.config.port, function() {
+server.listen(app.config.port, app.config.host, function() {
   console.log('Server listening on ' + app.config.host);
 });

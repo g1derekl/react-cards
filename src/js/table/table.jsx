@@ -53,6 +53,7 @@ var Surface = React.createClass({
     CardStore.unlisten(this.onChange);
   },
   onChange: function(state) {
+    console.log('555555555555')
     this.setState(state);
   },
   render: function() {
