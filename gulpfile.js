@@ -60,3 +60,5 @@ gulp.task('default', ['styles', 'start'], function() {
   gulp.watch("src/styles/**/*.scss", ['styles']);
   gulp.watch(["src/js/**/*.jsx", "src/js/**/*.js"], ['scripts']);
 });
+
+gulp.task('build', ['styles', 'scripts']);
