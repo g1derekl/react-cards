@@ -11,6 +11,7 @@
     &.highlighted {
       border: 2px solid #00ff00;
       border-radius: 5px;
+      box-sizing: border-box;
     }
   }
 }
