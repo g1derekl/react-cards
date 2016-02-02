@@ -12,6 +12,11 @@ var CardStore = alt.CardStore;
 var CardActions = alt.CardActions;
 
 var Card = React.createClass({
+  getInitialState: function() {
+    return {
+      highlighted: false
+    };
+  },
   componentDidMount: function() {
     interact(ReactDOM.findDOMNode(this))
       .draggable({
@@ -31,11 +36,22 @@ var Card = React.createClass({
 
     CardActions.moveCard({suit: this.props.suit, value: this.props.value, x: x, y: y, socket: this.props.socket});
   },
+  _toggleHighlight: function(e) {
+    this.setState({
+      highlighted: !this.state.highlighted
+    });
+  },
   render: function() {
+    var src;
+
     if (this.props.hidden) {
-      return <img className="card" src={"/public/cards/" + this.props.suit + "/" + this.props.value + ".svg"} style={{transform: this._transform()}} />
+      src = "/public/cards/card_back.svg";
     }
-    return <img className="card" src={"/public/cards/card_back.svg"} style={{transform: this._transform()}} />
+    else {
+      src = "/public/cards/" + this.props.suit + "/" + this.props.value + ".svg";
+    }
+
+    return <img className={"card " + (this.state.highlighted ? "highlighted" : "")} src={src} style={{transform: this._transform()}} onMouseOver={this._toggleHighlight} onMouseOut={this._toggleHighlight} />
   }
 });
 
