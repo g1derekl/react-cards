@@ -9,6 +9,7 @@ module.exports = {
     _.each(cards, function(card) { // Assign initial position to cards
       card.x = 25;
       card.y = 25;
+      card.hidden = true;
     });
 
     this.updateCards(socket, table, cards, true);

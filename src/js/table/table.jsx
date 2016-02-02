@@ -12,12 +12,6 @@ var CardStore = alt.CardStore;
 var CardActions = alt.CardActions;
 
 var Card = React.createClass({
-  // getInitialState: function() {
-  //   return {
-  //     x: this.props.x,
-  //     y: this.props.y
-  //   };
-  // },
   componentDidMount: function() {
     interact(ReactDOM.findDOMNode(this))
       .draggable({
@@ -38,7 +32,10 @@ var Card = React.createClass({
     CardActions.moveCard({suit: this.props.suit, value: this.props.value, x: x, y: y, socket: this.props.socket});
   },
   render: function() {
-    return <img className="card" src={"/public/cards/" + this.props.suit + "/" + this.props.value + ".svg"} style={{transform: this._transform()}} />
+    if (this.props.hidden) {
+      return <img className="card" src={"/public/cards/" + this.props.suit + "/" + this.props.value + ".svg"} style={{transform: this._transform()}} />
+    }
+    return <img className="card" src={"/public/cards/card_back.svg"} style={{transform: this._transform()}} />
   }
 });
 
@@ -58,7 +55,7 @@ var Surface = React.createClass({
   render: function() {
     var self = this;
     return <div className="surface">
-      {this.state.cards.map(function(card) {return <Card socket={self.props.socket} key={card.value + card.suit} suit={card.suit} value={card.value} x={card.x} y={card.y} />})}
+      {this.state.cards.map(function(card, index) {return <Card socket={self.props.socket} key={index} suit={card.suit} value={card.value} x={card.x} y={card.y} hidden={card.hidden} />})}
     </div>
   }
 });
