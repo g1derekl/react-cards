@@ -2,8 +2,7 @@
 
 A multiplayer playing cards engine built on React and Websockets
 
-Live demo: http://boxofcards-g1derekl.rhcloud.com/
-Drag cards to move, F to flip and Q/E to rotate.
+Live demo: http://boxofcards-g1derekl.rhcloud.com/ (Drag cards to move, F to flip and Q/E to rotate.)
 
 Cards made interactive with [Interact.js](http://interactjs.io/)
 
