@@ -2,4 +2,6 @@
 
 cd ~/app-root/runtime/repo
 
+ln -s ~/app-root/data/local.json ~/app-root/runtime/repo/src/js/local.json
+
 npm run-script build
