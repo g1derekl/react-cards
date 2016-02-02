@@ -22,5 +22,8 @@ module.exports = {
     else {
       socket.broadcast.emit('cards', cards);
     }
+  },
+  removePlayer: function removePlayer(players, id) {
+    _.remove(players, {id: id}); // Do a simple remove for now; maybe a send a message or something later
   }
 };

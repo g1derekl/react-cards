@@ -19,7 +19,7 @@ module.exports = function(app, io) {
 
     var table;
 
-    if (!openTables[tableId]) {
+    if (!openTables[tableId]) { // If no table with ID, create new table with this socket as first player
       openTables[tableId] = {players: [player]};
 
       game.setup(tables, openTables[tableId]); // Set up game
@@ -36,10 +36,23 @@ module.exports = function(app, io) {
 
     socket.emit('welcome', {message: 'Welcome to Box of Cards'});
 
-    tables.to(tableId).emit('players', io.nsps['/tables'].adapter.rooms[tableId].sockets);
+    tables.to(tableId).emit('players', openTables[tableId].players);
 
-    socket.on('updateCards', function(cards) {
+    // Respond to incoming events -----
+
+    socket.on('updateCards', function updateCards(cards) {
       game.updateCards(socket, table, cards);
+    });
+
+    socket.on('disconnect', function playerDisconnect() {
+      game.removePlayer(openTables[tableId].players, socket.id);
+
+      if (openTables[tableId].players.length === 0) { // Delete table if empty
+        delete openTables[tableId];
+      }
+      else {
+        tables.to(tableId).emit('players', openTables[tableId].players);
+      }
     });
   });
 };
