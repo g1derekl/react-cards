@@ -15,7 +15,7 @@ var Card = React.createClass({
     };
   },
   componentDidMount: function() {
-    window.addEventListener('keydown', this._flip);
+    window.addEventListener('keydown', this._keyPressHandler);
 
     interact(ReactDOM.findDOMNode(this))
       .draggable({
@@ -27,10 +27,10 @@ var Card = React.createClass({
       });
   },
   componentWillUnmount: function() {
-    window.removeEventListener('keydown', this._flip);
+    window.removeEventListener('keydown', this._keyPressHandler);
   },
   _transform: function() {
-    return "translate(" + this.props.x + "px, " + this.props.y + "px)";
+    return "translate(" + this.props.x + "px, " + this.props.y + "px) rotate(" + this.props.rotation + "deg)";
   },
   _dragHandler: function(e) {
     var x = this.props.x + e.dx;
@@ -43,10 +43,28 @@ var Card = React.createClass({
       highlighted: !this.state.highlighted
     });
   },
-  _flip: function(e) {
-    if (e.keyCode === 70 && this.state.highlighted) {
-      Alt.CardActions.flipCard({suit: this.props.suit, value: this.props.value});
+  _keyPressHandler: function(e) { // Handle keyboard events
+    if (!this.state.highlighted) { // If card is not focused, do nothing
+      return;
     }
+
+    switch (e.keyCode) {
+      case 70:
+        return this._flip();
+      case 81:
+        return this._rotateLeft();
+      case 69:
+        return this._rotateRight();
+    }
+  },
+  _flip: function() {
+    Alt.CardActions.flipCard(this.props);
+  },
+  _rotateLeft: function() { // Turn counterclockwise
+    Alt.CardActions.rotateLeft(this.props);
+  },
+  _rotateRight: function() { // Turn clockwise
+    Alt.CardActions.rotateRight(this.props);
   },
   render: function() {
     var src;
@@ -84,7 +102,7 @@ var Surface = React.createClass({
   render: function() {
     var self = this;
     return <div className="surface">
-      {this.state.cards.map(function(card, index) {return <Card key={index} suit={card.suit} value={card.value} x={card.x} y={card.y} hidden={card.hidden} />})}
+      {this.state.cards.map(function(card, index) {return <Card key={index} suit={card.suit} value={card.value} x={card.x} y={card.y} rotation={card.rotation} hidden={card.hidden} />})}
     </div>
   }
 });

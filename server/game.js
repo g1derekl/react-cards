@@ -10,6 +10,7 @@ module.exports = {
       card.x = 25;
       card.y = 25;
       card.hidden = true;
+      card.rotation = 0;
     });
 
     this.updateCards(socket, table, cards, true);

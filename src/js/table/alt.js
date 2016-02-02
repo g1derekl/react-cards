@@ -32,7 +32,7 @@ module.exports = function(socket) {
     }
   });
 
-  var CardActions = alt.generateActions('updateCards', 'moveCard', 'flipCard');
+  var CardActions = alt.generateActions('updateCards', 'moveCard', 'flipCard', 'rotateLeft', 'rotateRight');
 
   var CardStore = alt.createStore({
     displayName: 'CardStore',
@@ -40,7 +40,9 @@ module.exports = function(socket) {
     bindListeners: {
       updateCards: CardActions.updateCards,
       moveCard: CardActions.moveCard,
-      flipCard: CardActions.flipCard
+      flipCard: CardActions.flipCard,
+      rotateLeft: CardActions.rotateLeft,
+      rotateRight: CardActions.rotateRight
     },
 
     state: {
@@ -52,7 +54,6 @@ module.exports = function(socket) {
         cards: cards
       });
     },
-
     moveCard: function moveCard(card) {
       var cards = this.state.cards;
       var cardToMove = _.find(cards, {suit: card.suit, value: card.value});
@@ -62,12 +63,37 @@ module.exports = function(socket) {
 
       this._emitChange(cards);
     },
-
     flipCard: function flipCard(card) {
       var cards = this.state.cards;
       var cardToFlip = _.find(cards, {suit: card.suit, value: card.value});
 
       cardToFlip.hidden = !cardToFlip.hidden;
+
+      this._emitChange(cards);
+    },
+    rotateLeft: function rotateLeft(card) {
+      var cards = this.state.cards;
+      var cardToRotate = _.find(cards, {suit: card.suit, value: card.value});
+
+      if (cardToRotate.rotation !== 0) {
+        cardToRotate.rotation = cardToRotate.rotation - 90;
+      }
+      else {
+        cardToRotate.rotation = 270;
+      }
+
+      this._emitChange(cards);
+    },
+    rotateRight: function rotateRight(card) {
+      var cards = this.state.cards;
+      var cardToRotate = _.find(cards, {suit: card.suit, value: card.value});
+
+      if (cardToRotate.rotation !== 270) {
+        cardToRotate.rotation = cardToRotate.rotation + 90;
+      }
+      else {
+        cardToRotate.rotation = 0;
+      }
 
       this._emitChange(cards);
     },
