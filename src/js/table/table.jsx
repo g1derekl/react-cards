@@ -6,10 +6,7 @@ var socket = require('../socket/socket.js');
 var alt = require('./alt.js');
 var connection = require('./connection.js');
 
-var PlayerStore = alt.PlayerStore;
-var PlayerActions = alt.PlayerActions;
-var CardStore = alt.CardStore;
-var CardActions = alt.CardActions;
+var Alt;
 
 var Card = React.createClass({
   getInitialState: function() {
@@ -39,7 +36,7 @@ var Card = React.createClass({
     var x = this.props.x + e.dx;
     var y = this.props.y + e.dy;
 
-    CardActions.moveCard({suit: this.props.suit, value: this.props.value, x: x, y: y, socket: this.props.socket});
+    Alt.CardActions.moveCard({suit: this.props.suit, value: this.props.value, x: x, y: y});
   },
   _toggleHighlight: function(e) {
     this.setState({
@@ -48,7 +45,7 @@ var Card = React.createClass({
   },
   _flip: function(e) {
     if (e.keyCode === 70 && this.state.highlighted) {
-      CardActions.flipCard({suit: this.props.suit, value: this.props.value, socket: this.props.socket});
+      Alt.CardActions.flipCard({suit: this.props.suit, value: this.props.value});
     }
   },
   render: function() {
@@ -73,13 +70,13 @@ var Card = React.createClass({
 
 var Surface = React.createClass({
   getInitialState: function() {
-    return CardStore.getState();
+    return Alt.CardStore.getState();
   },
   componentDidMount: function() {
-    CardStore.listen(this.onChange);
+    Alt.CardStore.listen(this.onChange);
   },
   componentWillUnmount: function() {
-    CardStore.unlisten(this.onChange);
+    Alt.CardStore.unlisten(this.onChange);
   },
   onChange: function(state) {
     this.setState(state);
@@ -87,23 +84,24 @@ var Surface = React.createClass({
   render: function() {
     var self = this;
     return <div className="surface">
-      {this.state.cards.map(function(card, index) {return <Card socket={self.props.socket} key={index} suit={card.suit} value={card.value} x={card.x} y={card.y} hidden={card.hidden} />})}
+      {this.state.cards.map(function(card, index) {return <Card key={index} suit={card.suit} value={card.value} x={card.x} y={card.y} hidden={card.hidden} />})}
     </div>
   }
 });
 
 module.exports = React.createClass({
   getInitialState: function() {
-    this.socket = socket(this.props.params.tableName);
-    connection(this.socket, alt); // Pass socket instance and actions to handler.
+    var Socket = socket(this.props.params.tableName);
+    Alt = alt(Socket);
+    connection(Socket, Alt); // Pass socket instance and actions to handler.
 
-    return PlayerStore.getState();
+    return Alt.PlayerStore.getState();
   },
   componentDidMount: function() {
-    PlayerStore.listen(this.onChange);
+    Alt.PlayerStore.listen(this.onChange);
   },
   componentWillUnmount: function() {
-    PlayerStore.unlisten(this.onChange);
+    Alt.PlayerStore.unlisten(this.onChange);
   },
   onChange: function(state) {
     this.setState(state);
@@ -111,7 +109,7 @@ module.exports = React.createClass({
   render: function() {
     return <div>
       {this.state.players.map(function(player) {return <div key={player.id}>{player.id}</div>})}
-      <Surface socket={this.socket} />
+      <Surface />
     </div>;
   }
 });

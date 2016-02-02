@@ -1,86 +1,89 @@
 var alt = require('../alt.js');
 
-var PlayerActions = alt.createActions({
-  updatePlayerList: function updatePlayerList(players) {
-    return players;
-  }
-});
+module.exports = function(socket) {
 
-var PlayerStore = alt.createStore({
-  displayName: 'PlayerStore',
-
-  bindListeners: {
-    updatePlayerList: PlayerActions.updatePlayerList
-  },
-
-  state: {
-    players: []
-  },
-  
-  publicMethods: {
-    getPlayers: function () {
-      return this.getState().players;
+  var PlayerActions = alt.createActions({
+    updatePlayerList: function updatePlayerList(players) {
+      return players;
     }
-  },
+  });
 
-  updatePlayerList: function (players) {
-    this.setState({
-      players: players
-    });
-  }
-});
+  var PlayerStore = alt.createStore({
+    displayName: 'PlayerStore',
 
-var CardActions = alt.generateActions('updateCards', 'moveCard', 'flipCard');
+    bindListeners: {
+      updatePlayerList: PlayerActions.updatePlayerList
+    },
 
-var CardStore = alt.createStore({
-  displayName: 'CardStore',
+    state: {
+      players: []
+    },
+    
+    publicMethods: {
+      getPlayers: function () {
+        return this.getState().players;
+      }
+    },
 
-  bindListeners: {
-    updateCards: CardActions.updateCards,
-    moveCard: CardActions.moveCard,
-    flipCard: CardActions.flipCard
-  },
+    updatePlayerList: function (players) {
+      this.setState({
+        players: players
+      });
+    }
+  });
 
-  state: {
-    cards: []
-  },
+  var CardActions = alt.generateActions('updateCards', 'moveCard', 'flipCard');
 
-  updateCards: function updateCards(cards) {
-    this.setState({
-      cards: cards
-    });
-  },
+  var CardStore = alt.createStore({
+    displayName: 'CardStore',
 
-  moveCard: function moveCard(card) {
-    var cards = this.state.cards;
-    var cardToMove = _.find(cards, {suit: card.suit, value: card.value});
+    bindListeners: {
+      updateCards: CardActions.updateCards,
+      moveCard: CardActions.moveCard,
+      flipCard: CardActions.flipCard
+    },
 
-    cardToMove.x = card.x;
-    cardToMove.y = card.y;
+    state: {
+      cards: []
+    },
 
-    this._emitChange(cards, card.socket);
-  },
+    updateCards: function updateCards(cards) {
+      this.setState({
+        cards: cards
+      });
+    },
 
-  flipCard: function flipCard(card) {
-    var cards = this.state.cards;
-    var cardToFlip = _.find(cards, {suit: card.suit, value: card.value});
+    moveCard: function moveCard(card) {
+      var cards = this.state.cards;
+      var cardToMove = _.find(cards, {suit: card.suit, value: card.value});
 
-    cardToFlip.hidden = !cardToFlip.hidden;
+      cardToMove.x = card.x;
+      cardToMove.y = card.y;
 
-    this._emitChange(cards, card.socket);
-  },
+      this._emitChange(cards);
+    },
 
-  // Helper to broadcast state changes
-  _emitChange: function _emitChange(cards, socket) {
-    this.setState({cards: cards});
+    flipCard: function flipCard(card) {
+      var cards = this.state.cards;
+      var cardToFlip = _.find(cards, {suit: card.suit, value: card.value});
 
-    socket.emit('updateCards', cards);
-  }
-});
+      cardToFlip.hidden = !cardToFlip.hidden;
 
-module.exports = {
-  PlayerActions: PlayerActions,
-  PlayerStore: PlayerStore,
-  CardActions: CardActions,
-  CardStore: CardStore
+      this._emitChange(cards);
+    },
+
+    // Helper to broadcast state changes
+    _emitChange: function _emitChange(cards) {
+      this.setState({cards: cards});
+
+      socket.emit('updateCards', cards);
+    }
+  });
+
+  return {
+    PlayerActions: PlayerActions,
+    PlayerStore: PlayerStore,
+    CardActions: CardActions,
+    CardStore: CardStore
+  };
 };
