@@ -30,14 +30,15 @@ var PlayerStore = alt.createStore({
   }
 });
 
-var CardActions = alt.generateActions('updateCards', 'moveCard');
+var CardActions = alt.generateActions('updateCards', 'moveCard', 'flipCard');
 
 var CardStore = alt.createStore({
   displayName: 'CardStore',
 
   bindListeners: {
     updateCards: CardActions.updateCards,
-    moveCard: CardActions.moveCard
+    moveCard: CardActions.moveCard,
+    flipCard: CardActions.flipCard
   },
 
   state: {
@@ -57,9 +58,23 @@ var CardStore = alt.createStore({
     cardToMove.x = card.x;
     cardToMove.y = card.y;
 
+    this._emitChange(cards, card.socket);
+  },
+
+  flipCard: function flipCard(card) {
+    var cards = this.state.cards;
+    var cardToFlip = _.find(cards, {suit: card.suit, value: card.value});
+
+    cardToFlip.hidden = !cardToFlip.hidden;
+
+    this._emitChange(cards, card.socket);
+  },
+
+  // Helper to broadcast state changes
+  _emitChange: function _emitChange(cards, socket) {
     this.setState({cards: cards});
 
-    card.socket.emit('updateCards', cards);
+    socket.emit('updateCards', cards);
   }
 });
 

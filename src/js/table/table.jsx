@@ -18,6 +18,8 @@ var Card = React.createClass({
     };
   },
   componentDidMount: function() {
+    window.addEventListener('keydown', this._flip);
+
     interact(ReactDOM.findDOMNode(this))
       .draggable({
         restrict: {
@@ -26,6 +28,9 @@ var Card = React.createClass({
         },
         onmove: this._dragHandler
       });
+  },
+  componentWillUnmount: function() {
+    window.removeEventListener('keydown', this._flip);
   },
   _transform: function() {
     return "translate(" + this.props.x + "px, " + this.props.y + "px)";
@@ -41,6 +46,11 @@ var Card = React.createClass({
       highlighted: !this.state.highlighted
     });
   },
+  _flip: function(e) {
+    if (e.keyCode === 70 && this.state.highlighted) {
+      CardActions.flipCard({suit: this.props.suit, value: this.props.value, socket: this.props.socket});
+    }
+  },
   render: function() {
     var src;
 
@@ -51,7 +61,13 @@ var Card = React.createClass({
       src = "/public/cards/" + this.props.suit + "/" + this.props.value + ".svg";
     }
 
-    return <img className={"card " + (this.state.highlighted ? "highlighted" : "")} src={src} style={{transform: this._transform()}} onMouseOver={this._toggleHighlight} onMouseOut={this._toggleHighlight} />
+    return (<img
+      className={"card " + (this.state.highlighted ? "highlighted" : "")}
+      src={src}
+      style={{transform: this._transform()}}
+      onMouseOver={this._toggleHighlight}
+      onMouseOut={this._toggleHighlight}
+    />)
   }
 });
 
