@@ -53,7 +53,6 @@ var Surface = React.createClass({
     CardStore.unlisten(this.onChange);
   },
   onChange: function(state) {
-    console.log('555555555555')
     this.setState(state);
   },
   render: function() {
@@ -82,7 +81,7 @@ module.exports = React.createClass({
   },
   render: function() {
     return <div>
-      {this.state.players.map(function(player) {return <div key={player}>{player}</div>})}
+      {this.state.players.map(function(player) {return <div key={player.id}>{player.id}</div>})}
       <Surface socket={this.socket} />
     </div>;
   }
