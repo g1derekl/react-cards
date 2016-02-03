@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var shortid = require('shortid');
 
 var cards = require('../cards.json');
 
@@ -11,6 +12,7 @@ module.exports = {
       card.y = 25;
       card.hidden = true;
       card.rotation = 0;
+      card.id = shortid.generate();
     });
 
     this.updateCards(socket, table, cards, true);

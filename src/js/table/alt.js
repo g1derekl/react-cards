@@ -56,10 +56,12 @@ module.exports = function(socket) {
     },
     moveCard: function moveCard(card) {
       var cards = this.state.cards;
-      var cardToMove = _.find(cards, {suit: card.suit, value: card.value});
+      var cardToMove = _.remove(cards, {suit: card.suit, value: card.value})[0];
 
       cardToMove.x = card.x;
       cardToMove.y = card.y;
+
+      cards.push(cardToMove);
 
       this._emitChange(cards);
     },

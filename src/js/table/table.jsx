@@ -102,7 +102,16 @@ var Surface = React.createClass({
   render: function() {
     var self = this;
     return <div className="surface">
-      {this.state.cards.map(function(card, index) {return <Card key={index} suit={card.suit} value={card.value} x={card.x} y={card.y} rotation={card.rotation} hidden={card.hidden} />})}
+      {this.state.cards.map(function(card, index) {
+        return <Card
+          key={card.id}
+          suit={card.suit} value={card.value}
+          x={card.x}
+          y={card.y}
+          rotation={card.rotation}
+          hidden={card.hidden}
+        />
+      })}
     </div>
   }
 });
