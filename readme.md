@@ -21,6 +21,7 @@ To do:
  - Position-based POV (players see board differently based on their seating position)
  - Hidden hands (special area for each player where only they can see cards)
  - Chat
+ - Hash card values on client to prevent cheating
  - More to come
 
 To run on your own machine:
