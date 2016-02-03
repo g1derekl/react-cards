@@ -12,10 +12,10 @@ What works:
  - Moving cards around on the surface
  - Flipping (showing/hiding) cards
  - Live list of connected clients
+ - Put moved card on top of pile
 
 To do:
 
- - Put moved card on top of pile
  - Group cards and allow multiple-select and move
  - Easily shuffle cards
  - Position-based POV (players see board differently based on their seating position)
