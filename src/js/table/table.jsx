@@ -34,16 +34,18 @@ var Card = React.createClass({
     Alt.CardActions.moveCard({suit: this.props.suit, value: this.props.value, x: x, y: y});
   },
   _toggleHighlight: function(e) {
-    var highlighted = !this.state.highlighted;
+    var event = e.type;
 
-    this.setState({
-      highlighted: highlighted
-    });
-
-    if (highlighted) {
+    if (event === 'mouseenter') {
+      this.setState({
+        highlighted: true
+      });
       window.addEventListener('keydown', this._keyPressHandler);
     }
-    else {
+    else if (event === 'mouseleave') {
+      this.setState({
+        highlighted: false
+      });
       window.removeEventListener('keydown', this._keyPressHandler);
     }
   },
@@ -80,8 +82,8 @@ var Card = React.createClass({
       className={"card " + (this.state.highlighted ? "highlighted" : "")}
       src={src}
       style={{transform: this._transform()}}
-      onMouseOver={this._toggleHighlight}
-      onMouseOut={this._toggleHighlight}
+      onMouseEnter={this._toggleHighlight}
+      onMouseLeave={this._toggleHighlight}
     />)
   }
 });
