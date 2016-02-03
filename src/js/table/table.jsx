@@ -15,8 +15,6 @@ var Card = React.createClass({
     };
   },
   componentDidMount: function() {
-    window.addEventListener('keydown', this._keyPressHandler);
-
     interact(ReactDOM.findDOMNode(this))
       .draggable({
         restrict: {
@@ -25,9 +23,6 @@ var Card = React.createClass({
         },
         onmove: this._dragHandler
       });
-  },
-  componentWillUnmount: function() {
-    window.removeEventListener('keydown', this._keyPressHandler);
   },
   _transform: function() {
     return "translate(" + this.props.x + "px, " + this.props.y + "px) rotate(" + this.props.rotation + "deg)";
@@ -39,15 +34,20 @@ var Card = React.createClass({
     Alt.CardActions.moveCard({suit: this.props.suit, value: this.props.value, x: x, y: y});
   },
   _toggleHighlight: function(e) {
+    var highlighted = !this.state.highlighted;
+
     this.setState({
-      highlighted: !this.state.highlighted
+      highlighted: highlighted
     });
+
+    if (highlighted) {
+      window.addEventListener('keydown', this._keyPressHandler);
+    }
+    else {
+      window.removeEventListener('keydown', this._keyPressHandler);
+    }
   },
   _keyPressHandler: function(e) { // Handle keyboard events
-    if (!this.state.highlighted) { // If card is not focused, do nothing
-      return;
-    }
-
     switch (e.keyCode) {
       case 70:
         return this._flip();
